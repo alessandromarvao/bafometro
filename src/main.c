@@ -36,10 +36,10 @@ int main()
     init_setup();
 
     // tarefa 1: solicitar a leitura do monitor serial
-    // tarefa1();
+    tarefa1();
 
     // tarefa 2: aguardar 10 segundos para aquecimento do sensor MQ3
-    // tarefa2();
+    tarefa2();
 
     // tarefa 3: interrupção para aguardar a leitura do sensor
     tarefa3();
@@ -54,6 +54,8 @@ int main()
             printf("Valor máximo recebido do MQ-3: %d\n", max_value);
             tarefa5(max_value);
         }
+
+        // Mantém o processador em estado de espera
         tight_loop_contents();
     }
 }

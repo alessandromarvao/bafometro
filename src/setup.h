@@ -31,12 +31,12 @@ void tarefa2();
 
 void tarefa3();
 
-bool tarefa4(bool *is_reading_sensor);
+void tarefa4(bool *is_reading_sensor);
 
 /**
  * Exibe no display o resultado da leitura do sensor MQ-3
  */
-bool tarefa5(uint16_t value);
+void tarefa5(uint16_t value);
 
 /**
  * Função de interrupção, acionado pelo botão A

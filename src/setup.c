@@ -94,7 +94,8 @@ void tarefa1()
  */
 void tarefa2()
 {
-    display_message(7);
+    printf("Aguarde 10 segundos enquanto o sensor MQ-3 aquece...\n");
+    display_message(3);
     sleep_ms(10000);
 }
 
@@ -103,27 +104,49 @@ void tarefa2()
  */
 void tarefa3()
 {
+    printf("Pressione o botão A para realizar o monitoramento de alcoolemia.\n");
     display_message(1);
 }
 
-bool tarefa4(bool *is_reading_sensor)
+void tarefa4(bool *is_reading_sensor)
 {
+    // desliga os LEDs (quando o teste é refeito)
+    gpio_put(RED_LED_PIN, false);
+    gpio_put(GREEN_LED_PIN, false);
+    gpio_put(BLUE_LED_PIN, false);
+
     if (*is_reading_sensor)
     {
         display_message(2);
         multicore_fifo_push_blocking(1);
         *is_reading_sensor = false;
     }
-
-    return *is_reading_sensor;
 }
 
 /**
  * Exibe no display o resultado da leitura do sensor MQ-3
  */
-bool tarefa5(uint16_t value)
+void tarefa5(uint16_t value)
 {
     MQ3Sensor sensor_data = mq3_result(value);
+    // uint16_t valor_bruto;
+    // float ppm;
+    // float voltagem;
+
+    printf("Valor recebido: %d - %.2f PPM - %.2f V\n", sensor_data.valor_bruto, sensor_data.ppm, sensor_data.voltagem);
+
+    if (sensor_data.ppm < 0.5) { // Sem álcool (ruído, ambiente)
+        gpio_put(RED_LED_PIN, true);
+        gpio_put(GREEN_LED_PIN, true);
+        gpio_put(BLUE_LED_PIN, true);
+    } else if (sensor_data.ppm < 1) { // Traços mínimos, exposição ambiental
+        gpio_put(GREEN_LED_PIN, true);
+    } else if (sensor_data.ppm < 5) { // Consumo moderado
+        gpio_put(RED_LED_PIN, true);
+        gpio_put(GREEN_LED_PIN, true);
+    } else { // Consumo significativo detectado
+        gpio_put(RED_LED_PIN, true);
+    }
     
-    display_sensor_data(value);
+    display_sensor_data(sensor_data.ppm);
 }

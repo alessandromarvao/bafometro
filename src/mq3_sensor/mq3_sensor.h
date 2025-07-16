@@ -37,8 +37,8 @@ uint16_t mq3_read();
 // Valores PPM:
 // 0 – 0,5 PPM	Sem álcool (ruído, ambiente)
 // 0,5 – 25 PPM	Traços mínimos, exposição ambiental
-// > 25 PPM	Consumo leve possível
-// > 50–100 PPM	Consumo significativo detectado
+// > 25 - 50 PPM	Consumo moderado
+// > 50 – 100 PPM	Consumo significativo detectado
 
 
 

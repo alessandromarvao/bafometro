@@ -97,28 +97,9 @@ void display_message(uint8_t menu)
             break;
         case 2:
             ssd1306_draw_string(ssd, 20, 16, "Realizando");
-            ssd1306_draw_string(ssd, 20, 32, "Teste");
+            ssd1306_draw_string(ssd, 37, 32, "Teste");
             break;
-        case 3: 
-            ssd1306_draw_string(ssd, 20, 16, "Sem presenca");
-            ssd1306_draw_string(ssd, 20, 32, "de alcool");
-            break;
-        case 4:
-            ssd1306_draw_string(ssd, 20, 16, "Alcool");
-            ssd1306_draw_string(ssd, 20, 32, "Detectado");
-            ssd1306_draw_string(ssd, 20, 48, "fraco");
-            break;
-        case 5:
-            ssd1306_draw_string(ssd, 20, 16, "Alcool");
-            ssd1306_draw_string(ssd, 20, 32, "Detectado");
-            ssd1306_draw_string(ssd, 20, 48, "Moderado");
-            break;
-        case 6:
-            ssd1306_draw_string(ssd, 20, 14, "Alcool");
-            ssd1306_draw_string(ssd, 20, 30, "Detectado");
-            ssd1306_draw_string(ssd, 20, 46, "Intenso");
-            break;
-        case 7:
+        case 3:
             ssd1306_draw_string(ssd, 20, 16, "Carregando...");
             break;
     }
@@ -126,7 +107,53 @@ void display_message(uint8_t menu)
     render_on_display(ssd, &frame_area);
 }
 
-void display_sensor_data(uint16_t value)
+void display_sensor_data(float ppm)
 {
+    struct render_area frame_area = {
+        start_column : 0,
+        end_column : ssd1306_width - 1,
+        start_page : 0,
+        end_page : ssd1306_n_pages - 1
+    };
+
+    char temp_formatted[30];
+    int vert_alignment;
+
+    calculate_render_area_buffer_length(&frame_area);
+
+    uint8_t ssd[ssd1306_buffer_length];
+
+    memset(ssd, 0, ssd1306_buffer_length);
+    render_on_display(ssd, &frame_area);
+
+    ssd1306_clear_display(ssd);
+
+    // uint16_t value, float ppm, float voltage
+
+    // Valores PPM:
+    // 0 – 0,5 PPM	Sem álcool (ruído, ambiente)
+    // 0,5 – 25 PPM	Traços mínimos, exposição ambiental
+    // > 25 - 50 PPM	Consumo moderado
+    // > 50 – 100 PPM	Consumo significativo detectado
+
+    if (ppm < 0.5) { // Sem álcool (ruído, ambiente)
+        printf("Ambiente livre de álcool.\n");
+        ssd1306_draw_string(ssd, 10, 20, "Ambiente limpo");
+    } else if (ppm < 1) { // Traços mínimos, exposição ambiental
+        printf("Traços mínimos de álcool, exposição ambiental.\n");
+        ssd1306_draw_string(ssd, 10, 20, "Baixo consumo");
+    } else if (ppm < 5) { // Consumo moderado
+        printf("Consumo de álcool moderado.\n");
+        ssd1306_draw_string(ssd, 10, 20, "Consumo moderado");
+    } else { // Consumo significativo detectado
+        printf("Consumo de álcool significativo detectado.\n");
+        ssd1306_draw_string(ssd, 10, 20, "Consumo alto");
+    }
+    
+    char linha_status[32];
+    snprintf(linha_status, sizeof(linha_status), "%.2f PPM", ppm);
+    ssd1306_draw_string(ssd, 30, 45, linha_status);
+
+    render_on_display(ssd, &frame_area);
     
 }

@@ -45,10 +45,9 @@ uint16_t mq3_read()
  * @param raw O valor lido no ADC.
  * @return MQ3Sensor Valor lido do sensor MQ3.
  */
-MQ3Sensor mq3_result(uint16_t raw)
+MQ3Sensor mq3_result(uint16_t result)
 {
     MQ3Sensor sensor;
-    uint16_t result = adc_read();
 
     float vrl = get_tensao(result); // tensão recebida na leitura do sensor
 
