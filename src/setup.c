@@ -110,13 +110,13 @@ void tarefa3()
 
 void tarefa4(bool *is_reading_sensor)
 {
-    // desliga os LEDs (quando o teste é refeito)
-    gpio_put(RED_LED_PIN, false);
-    gpio_put(GREEN_LED_PIN, false);
-    gpio_put(BLUE_LED_PIN, false);
-
     if (*is_reading_sensor)
     {
+        // desliga os LEDs (quando o teste é refeito)
+        gpio_put(RED_LED_PIN, false);
+        gpio_put(GREEN_LED_PIN, false);
+        gpio_put(BLUE_LED_PIN, false);
+        
         display_message(2);
         multicore_fifo_push_blocking(1);
         *is_reading_sensor = false;
@@ -129,9 +129,16 @@ void tarefa4(bool *is_reading_sensor)
 void tarefa5(uint16_t value)
 {
     MQ3Sensor sensor_data = mq3_result(value);
+    char *msg;
     // uint16_t valor_bruto;
     // float ppm;
     // float voltagem;
+
+    // Valores PPM:
+    // 0 – 0,5 PPM	Sem álcool (ruído, ambiente)
+    // 0,5 – 1 PPM	Traços mínimos, exposição ambiental
+    // > 1 - 5 PPM	Consumo moderado
+    // > 5     PPM	Consumo significativo detectado
 
     printf("Valor recebido: %d - %.2f PPM - %.2f V\n", sensor_data.valor_bruto, sensor_data.ppm, sensor_data.voltagem);
 
@@ -139,14 +146,22 @@ void tarefa5(uint16_t value)
         gpio_put(RED_LED_PIN, true);
         gpio_put(GREEN_LED_PIN, true);
         gpio_put(BLUE_LED_PIN, true);
+        printf("Ambiente livre de álcool.\n");
+        msg = "Ambiente limpo";
     } else if (sensor_data.ppm < 1) { // Traços mínimos, exposição ambiental
         gpio_put(GREEN_LED_PIN, true);
+        printf("Traços mínimos de álcool, exposição ambiental.\n");
+        msg = "Baixo consumo";
     } else if (sensor_data.ppm < 5) { // Consumo moderado
         gpio_put(RED_LED_PIN, true);
         gpio_put(GREEN_LED_PIN, true);
+        printf("Consumo de álcool moderado.\n");
+        msg = "Consu moderado";
     } else { // Consumo significativo detectado
         gpio_put(RED_LED_PIN, true);
+        printf("Consumo de álcool significativo detectado.\n");
+        msg = "Consumo alto";
     }
     
-    display_sensor_data(sensor_data.ppm);
+    display_sensor_data(sensor_data.ppm, msg);
 }

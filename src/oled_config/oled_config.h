@@ -14,6 +14,6 @@ void display_message(uint8_t menu);
 // 6: Inicialize o monitor serial
 // 7: Aguarde, por favor
 
-void display_sensor_data(float ppm);
+void display_sensor_data(float ppm, char msg[]);
 
 #endif
