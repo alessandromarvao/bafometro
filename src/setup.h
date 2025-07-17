@@ -12,7 +12,7 @@
 /**
  * Inicializa os componentes a serem utilizados pelo Core0 (foreground)
  */
-void init_setup();
+void tarefa0();
 
 /**
  * Realiza a leitura do sensor MQ-3

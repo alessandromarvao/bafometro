@@ -33,7 +33,7 @@ int main()
     multicore_launch_core1(mq3_reading);
 
     // Inicializa os pinos GPIO do LED RGB e do botão A
-    init_setup();
+    tarefa0();
 
     // tarefa 1: solicitar a leitura do monitor serial
     tarefa1();

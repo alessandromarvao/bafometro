@@ -11,7 +11,7 @@
 /**
  * Inicializa os componentes a serem utilizados pelo Core0 (foreground)
  */
-void init_setup()
+void tarefa0()
 {
     // Inicializa os LEDs
     gpio_init(RED_LED_PIN);
