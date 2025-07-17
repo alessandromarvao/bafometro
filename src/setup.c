@@ -56,7 +56,8 @@ void mq3_reading()
             while (absolute_time_diff_us(start, get_absolute_time()) < 10 * 1000000)
             {
                 uint16_t data_received = mq3_read();
-                printf("Dado bruto da leitura do MQ-3: %d\n", data_received);
+                MQ3Sensor result = mq3_result(data_received);
+                printf("Dado bruto da leitura do MQ-3: %d - %.2f V - %.2f PPM\n", data_received, result.voltagem, result.ppm);
 
                 // Lê o sensor MQ-3
                 if (data_received > higher_data_received)
